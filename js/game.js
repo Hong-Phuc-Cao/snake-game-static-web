@@ -50,6 +50,8 @@ if (hasPoison) {
 let dx = 0
 let dy = 0
 let score = 0
+let numberOfTimesFailed = 0
+let numberOfTimesPoisoned = 0
 let gameLoop;
 let gameOver = false;
 
@@ -88,13 +90,15 @@ function drawGame() {
             snake.unshift(head)
 
             if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-                console.log('collide w wall -> endGame');
+                //console.log('collide w wall -> endGame');
+                numberOfTimesFailed += 1
                 endGame()
                 return
             }
 
             if (snake.slice(1).some(segment => segment.x == head.x && segment.y == head.y)) {
-                console.log('collide w itself -> endGame');
+                //console.log('collide w itself -> endGame');
+                numberOfTimesFailed += 1
                 endGame()
                 return
             }
@@ -107,6 +111,9 @@ function drawGame() {
                 snake.pop()
             }
             if (head.x === poison.x && head.y === poison.y) {
+                numberOfTimesFailed += 1
+                numberOfTimesPoisoned += 1
+                //console.log('poison counter:', numberOfTimesPoisoned);
                 endGame()
                 return
             }
@@ -135,6 +142,30 @@ function generatePoison() {
     }
 }
 
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let testLine = '';
+    let lineCount = 0;
+    const maxLines = 3;
+
+    for (let n = 0; n < words.length; n++) {
+        testLine = line + words[n] + ' ';
+        const metrics = context.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if ((testWidth > maxWidth && n > 0) || lineCount >= maxLines) {
+            context.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+            lineCount++;
+        } else {
+            line = testLine;
+        }
+    }
+    context.fillText(line, x, y);
+}
+
 function endGame() {
     gameOver = true;
     clearInterval(gameLoop);
@@ -145,21 +176,44 @@ function endGame() {
     ctx.font = '30px Arial';
     ctx.textAlign = 'center';
     if (score <= 3) {
-        ctx.fillText('YOU FAILURE!', canvas.width / 2, canvas.height / 2);
-        try {
-            gameOverSound.play()
-        } catch (error) {
-            console.log('Error playing sound:', error);
+        if(numberOfTimesFailed >= 3 && numberOfTimesPoisoned < 3){
+            wrapText(ctx, 'WHY MUST YOU FAIL ME SO OFTEN!?', 
+                canvas.width / 2, 
+                canvas.height / 2, 
+                canvas.width - 40, 
+            30);
+            try {
+                gameOverSound.play()
+            } catch (error) {
+                console.log('Error playing sound:', error);
+            }            
+        }else if(numberOfTimesFailed >= 3 && numberOfTimesPoisoned >= 3){
+            wrapText(ctx, 'OH MY FUQKING GOD STOP EATING THE POISON!?', 
+                canvas.width / 2, 
+                canvas.height / 2, 
+                canvas.width - 40, 
+            30);
+            try {
+                gameOverSound.play()
+            } catch (error) {
+                console.log('Error playing sound:', error);
+            }
+        }else{
+            ctx.fillText('YOU FAILURE!', canvas.width / 2, canvas.height / 2);
+            try {
+                gameOverSound.play()
+            } catch (error) {
+                console.log('Error playing sound:', error);
+            }
         }
     } else {
         ctx.fillText('Game over!', canvas.width / 2, canvas.height / 2);
     }
-
 }
 
 function resetGame() {
-    console.log('Restart button clicked!');
-    console.log('Title count: ', tileCount);
+    // console.log('Restart button clicked!');
+    // console.log('Title count: ', tileCount);
 
     let speed
     if (difficulty === 'easy') {
@@ -203,7 +257,7 @@ document.addEventListener('keydown', e => {
                 dx = 0;
                 dy = -1
             }
-            console.log('Up');
+            //console.log('Up');
             break
         case 's':
         case 'ArrowDown':
@@ -211,7 +265,7 @@ document.addEventListener('keydown', e => {
                 dx = 0;
                 dy = 1
             }
-            console.log('Down');
+            //console.log('Down');
             break
         case 'a':
         case 'ArrowLeft':
@@ -219,7 +273,7 @@ document.addEventListener('keydown', e => {
                 dx = -1;
                 dy = 0
             }
-            console.log('Left');
+            //console.log('Left');
             break
         case 'd':
         case 'ArrowRight':
@@ -227,7 +281,7 @@ document.addEventListener('keydown', e => {
                 dx = 1;
                 dy = 0
             }
-            console.log('Right');
+            // console.log('Right');
             break
     }
 })
