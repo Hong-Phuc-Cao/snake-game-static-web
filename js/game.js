@@ -5,7 +5,7 @@ const restartBtn = document.getElementById('restartBtn')
 
 const urlParams = new URLSearchParams(window.location.search);
 const difficulty = urlParams.get('difficulty')
-const gameOverSound = new Audio('./assets/failureSound.mp3')
+const gameOverSound = new Audio('../assets/failureSound.mp3')
 gameOverSound.playbackRate = 2.0
 
 let hasPoison
