@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-gray-900 flex flex-col items-center">
+    <div class="text-center text-white mb-4">
+        <h1 class="text-3xl font-bold">Snake Game</h1>
+        <p class="text-lg">Score: <span id="score">0</span></p>
+        <p class="text-sm mt-2">Use the arrow buttons or the AWSD buttons on your keyboard to move</p>
+    </div>
+    <canvas id="gameCanvas" width="400" height="400" class="bg-gray-800"></canvas>
+    <button id="restartBtn" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded hidden">Play again</button>
+    
+    <a href="menu.html" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">Select difficulty</a>
+    
+    
+    <script src="../js/game.js"></script>
+</body>
+</html>
